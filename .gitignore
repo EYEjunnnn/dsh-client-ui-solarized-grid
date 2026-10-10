@@ -1,0 +1,10 @@
+# dependencies and scratch
+node_modules/
+backup/
+*.bak
+*.bak-*
+
+# editor / OS noise
+.DS_Store
+Thumbs.db
+desktop.ini
