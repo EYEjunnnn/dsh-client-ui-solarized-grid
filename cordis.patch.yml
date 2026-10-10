@@ -1,0 +1,11 @@
+# ============================================================================
+# dsh-client-ui-solarized-grid - DSH bundle patch (mount declaration)
+# ============================================================================
+# DSH composes the config tree from each bundle's patch, then the profile's own
+# cordis.patch.yml. Declaring the row here means installing this package needs no
+# manual profile editing.
+# ============================================================================
+
+- insert:
+    - id: ui-solarized-grid
+      name: dsh-client-ui-solarized-grid

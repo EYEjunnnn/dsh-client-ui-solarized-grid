@@ -1,0 +1,92 @@
+/* Solarized notebook background + user-bubble accent.
+   Part 1: adapted from the "86~115 网格背景 / notebook background" CSS (blue-topaz):
+   the same two-tier grid (75px major + 15px minor lines) and the same variable
+   names, recoloured with the Solarized palette and applied to the transcript
+   surface instead of Obsidian's reading view.
+   Part 2 (bottom): the user message bubble — left accent bar plus the dark-mode ink. */
+
+html body {
+  --bg-color-notebook: #fdf6e3;
+  --grid-notebook-line-color-1: #93a1a124;
+  --grid-notebook-line-color-2: #586e7533;
+  --dotted-notebook-dot-color: #93a1a124;
+  background-color: var(--bg-color-notebook);
+}
+
+html body[data-ds-dark-theme] {
+  --bg-color-notebook: #002b36;
+  --grid-notebook-line-color-1: #586e7540;
+  --grid-notebook-line-color-2: #93a1a14d;
+  --dotted-notebook-dot-color: #586e7540;
+  background-color: var(--bg-color-notebook);
+}
+
+/* The conversation transcript scrollport — the GUI's counterpart of Obsidian's
+   `.markdown-reading-view .markdown-rendered` / `.cm-scroller`. */
+[data-conversation-scroll] {
+  background-color: var(--bg-color-notebook);
+  background-image:
+    linear-gradient(var(--grid-notebook-line-color-2) 1px, transparent 0),
+    linear-gradient(90deg, var(--grid-notebook-line-color-2) 1px, transparent 0),
+    linear-gradient(var(--grid-notebook-line-color-1) 1px, transparent 0),
+    linear-gradient(90deg, var(--grid-notebook-line-color-1) 1px, transparent 0);
+  background-size: 75px 75px, 75px 75px, 15px 15px, 15px 15px;
+  background-attachment: local !important;
+}
+
+/* ---------------------------------------------------------------------------
+   用户消息气泡：左侧 3px 边条 + 分模式的卡片底色
+   底色（令牌 --dsw-specific-bubble）：浅色 含蓄档 #bfe3e0；深色 象牙 #e8dfc9。
+
+   边条用【单色 + inset box-shadow】。
+   ★ 为什么不能换成 background-image 渐变：渐变画出来的是"3px 直条"，被圆角一裁，
+     两端就成了被弧线硬切掉的方角；而 inset box-shadow 是"外圆角矩形 − 同形状内移
+     3px 的差集"，两端会顺着弧线自然收窄 —— 也就是原来那种弯弧感。双色烫金只能靠
+     渐变（box-shadow 画不出多段配色），代价就是丢掉弯弧，故已弃用。
+
+   当前取值：
+     浅色 #002b36（深色模式的画布色）在 #bfe3e0 上 10.92:1 / ΔE 0.622
+     深色 古金 #9c7a00 在象牙 #e8dfc9 上 3.05:1 / ΔE 0.322
+
+   金色系实测（象牙底；卡片是浅色面 → 可见度由明度决定，越金越看不见）：
+     #ffe866 1.07:1/0.122 · #ffd700 1.06:1/0.153 · #d4af37 1.59:1/0.175
+     #b58900 2.42:1/0.271 · #9c7a00 3.05:1/0.322（当前） · #8a6a00 3.82:1/0.372
+     #5c3d00 墨赭 7.46:1/0.521（判定"像米棕"） · #002b36 11.32:1/0.642
+   金要有深底才真正成立（烫金压在深色皮革上）：
+     深棕 #443a2d + #ffd700 → 7.93:1/0.555 ｜ 更深 #2a2825 + #ffd700 → 10.48:1/0.634
+
+   深色墨：气泡文字读的是全局 --dsw-alias-label-primary（深色下是浅色 #eee8d5），
+   放在象牙卡片上只有 1.08:1，等于看不见，因此在这里 scoped 覆盖成 #264b55
+   （在 #e8dfc9 上 7.13:1）。用户消息是纯文本，一个 color 即可覆盖全部文字。
+   选择器用属性子串匹配以避开构建哈希（类名形如 cJsG2q_bubble），并限定在 _userRow 之内：
+   用户消息、待发回声、引导消息共用同一个气泡组件。
+   --------------------------------------------------------------------------- */
+html body {
+  --dsh-bubble-accent: #002b36;
+}
+
+html body[data-ds-dark-theme] {
+  --dsh-bubble-accent: #ff5900;
+}
+
+/* 深色边条定为 #ff5900（朱橙，用户选定）+ 1px 内描边。
+   为什么不为了过 3:1 而加深这个橙：橙族在本主题里已被语义占用 ——
+     #cb4b16 = state-warn-*（警告）  #dc322f = state-error-primary / code-diff-deleted（错误、删除）
+   #ff5900 与警告橙 ΔE 0.108（橙族里离语义色最远），而刚好过 3:1 的 #d94800 与警告橙
+   只差 ΔE 0.026 —— 加深等于把"我的消息"做成警示徽标，故保持亮橙不动。
+   于是存在感另想办法（两项都是 inset box-shadow，弯弧照旧）：
+     · 1px 内描边 inset 0 0 0 1px rgba(38,75,85,.2)：
+         象牙卡内侧等效 #c1c1b2（与卡片 ΔE 0.099）、淡青卡内侧等效 #a0c5c4（ΔE 0.093）。
+         浅色模式受益最大 —— 淡青卡片与米色画布本来只差 ΔE 0.098，加框后边界立刻清楚。
+         嫌轻/重就调 alpha（.14 ~ .26）。
+     · （备选，本次未采用）边条加宽 3px → 4px，面积 +33%。
+   注：#ff5900 在象牙卡片上只有 2.37:1（低于非文本元素的 3:1 门槛），但它贴着深色画布
+   那一侧是 4.78:1 —— 观感上的"跳"主要来自这条外缘。 */
+[class*="_userRow"] [class*="_bubble"] {
+  box-shadow: inset 3px 0 0 0 var(--dsh-bubble-accent),
+              inset 0 0 0 1px rgba(38, 75, 85, .2);
+}
+
+html body[data-ds-dark-theme] [class*="_userRow"] [class*="_bubble"] {
+  color: #264b55;
+}

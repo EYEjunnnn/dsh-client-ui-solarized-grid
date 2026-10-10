@@ -1,0 +1,6 @@
+@supports (corner-shape:superellipse(1.5)){
+:root{
+--dsw-corner-shape:superellipse(1.5)}
+*,:before,:after{
+corner-shape:var(--dsw-corner-shape)}
+}

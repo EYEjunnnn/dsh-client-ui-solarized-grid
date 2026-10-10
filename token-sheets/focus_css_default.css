@@ -1,0 +1,8 @@
+:root{
+--dsw-focus-ring-width:2px}
+:focus-visible{
+outline-color:var(--dsw-focus-ring-color,var(--dsw-alias-state-business-primary));
+outline-width:var(--dsw-focus-ring-width)}
+html[data-input-modality=pointer] body :focus-visible:not(:read-write){
+--dsw-focus-ring-color:transparent;
+outline-color:#0000}
